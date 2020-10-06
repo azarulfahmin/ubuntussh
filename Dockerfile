@@ -1,10 +1,13 @@
 FROM ubuntu:18.04
 
-RUN apt-get update && \
-    apt-get install -y ssh
-    
-RUN systemctl ssh start && \
-    systemctl ssh enable && \
-    service ssh status
+RUN apt update && apt install openssh-server sudo -y
 
-EXPOSE 6379
+RUN useradd -rm -d /home/ubuntu -s /bin/bash -g root -G sudo -u 1000 test
+
+RUN echo 'test:test' | chpasswd
+
+RUN service ssh start
+
+EXPOSE 22
+
+CMD ["/usr/sbin/sshd","-D"]
